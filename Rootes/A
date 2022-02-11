@@ -1,0 +1,73 @@
+
+[DEFAULT]
+lblROOT	: ARCO
+mntROOT : arco
+ROOT	: arco
+lblBOOT : ESP1
+
+[STORL]
+PATH	: /dev/disk/by-label
+root	: ${PATH}/${lblROOT}
+boot	: ${PATH}/${lblBOOT}
+
+
+[STORF]
+swap:
+proc	: /proc
+sys		: /sys
+dev		: /dev
+
+[MNT]
+PATH	: /os/${mntROOT}
+root	: ${PATH}
+boot	: ${PATH}/boot
+proc	: ${PATH}/proc
+sys		: ${PATH}/sys
+dev		: ${PATH}/dev
+etc : ${PATH}/etc
+
+
+[MNT_FS]
+f2fs	: -o rw,noatime -t reiserfs
+vfat 	: -o rw -t vfat
+proc 	: --types proc
+sys 	: --rbind
+dev 	: --rbind
+shm : -t tmpfs -o nosuid,nodev,noexec
+
+
+[DEVICE]
+PATH	: /dev/disk/by-label
+root	: ${PATH}/${lblROOT}
+boot	: ${PATH}/${lblBOOT}
+
+[SPECIAL]
+swap:p
+proc	: /proc
+sys		: /sys
+dev		: /dev
+[REROOT]
+PATH	: /os/${ROOT}
+root	: ${PATH}/
+boot	: ${PATH}/boot/efi
+proc	: ${PATH}/proc
+sys		: ${PATH}/sys
+dev		: ${PATH}/dev
+etc 	: ${PATH}/etc
+
+[OPTIONS]
+reiserfs: -o rw,acl,noatime -t reiserfs
+vfat 	: -o rw -t vfat
+proc 	: --types proc
+sys 	: --rbind
+dev 	: --rbind
+shm 	: -t tmpfs -o nosuid,nodev,noexec
+
+[SEQUENCES]
+ROOT 	: 	${OPTIONS:reiserfs}	${DEVICE:root}	${REROOT:root}
+BOOT 	: 	${OPTIONS:vfat}	${DEVICE:boot}	${REROOT:boot}
+PROC 	: 	${OPTIONS:proc}	${SPECIAL:proc}	${REROOT:proc}
+SYS 	:	${OPTIONS:sys}	${SPECIAL:sys}	${REROOT:sys}
+DEV 	:	${OPTIONS:dev}	${SPECIAL:dev}	${REROOT:dev}
+MKSSYS	:	--make-rslave	${REROOT:sys}
+MKSDEV	:	--make-rslave	${REROOT:dev}1
