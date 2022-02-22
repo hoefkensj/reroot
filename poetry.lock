@@ -7,7 +7,7 @@ optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-colorama = {version = "*", markers = "platform_system == \"Windows\""}
+colorama = "*"
 
 [[package]]
 name = "colorama"
@@ -16,9 +16,9 @@ description = "Cross-platform colored terminal text."
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+marker = "platform_system == \"Windows\""
 
 [metadata]
-lock-version = "1.1"
 python-versions = "^3.10"
 content-hash = "ad34fb32a16b0b73bd0d30bf54fc4eeddd8831da2be7e7e819b005a45e4593fc"
 

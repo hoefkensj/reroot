@@ -1,0 +1,8 @@
+LICENSE
+reroot.py
+setup.py
+reroot.egg-info/PKG-INFO
+reroot.egg-info/SOURCES.txt
+reroot.egg-info/dependency_links.txt
+reroot.egg-info/requires.txt
+reroot.egg-info/top_level.txt

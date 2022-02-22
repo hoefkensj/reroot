@@ -6,6 +6,7 @@ authors = ["Hoefkens Jeroen <hoefkens.j@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 
