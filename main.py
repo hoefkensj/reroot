@@ -24,20 +24,23 @@ def umount(path):
 	return subprocess.run(shlex.split(f'umount-l {path.lower()}') ,capture_output=True, universal_newlines=True).stdout
 
 def mount(**k):
-	return subprocess.run(shlex.split(f"mount {k['args']}") ,capture_output=True, universal_newlines=True).stdout
+	opts= ''.join([f'--{opt} ' for opt in k.get('opts') if k.get('opts')])
+	mountopts= '-o'+','.join(k.get('mntopts')) if k.get('mntopts') else ''
+	return # subprocess.run(shlex.split(f"mount {opts} {k['args']}") ,capture_output=True, universal_newlines=True).stdout
 
 def start(config,env):
 	import cfg
+	import lib.cfg
 	path=os.path.join(home(),'cfg/roots',f'{config.upper()}.ini')
 	print('USING:',path)
-	dct=cfg.to_dct(cfg.get(path))
+	dct=lib.cfg.to_dct(c=lib.cfg.readfile(c=lib.cfg.new(),f=path))
 	seqs=dct['SEQUENCES']
 	for seq in seqs:
 		print(f'mount {seqs[seq]}')
 		mount(args=seqs[seq])
 	print('copieng resolf.conf...')
-	out=subprocess.run(shlex.split(f'cp -vf --dereference /etc/resolv.conf /os/{env}/etc') ,capture_output=True, universal_newlines=True).stdout
-	return out
+	#out=subprocess.run(shlex.split(f'cp -vf --dereference /etc/resolv.conf /os/{env}/etc') ,capture_output=True, universal_newlines=True).stdout
+	return #out
 
 def stop(MNT):
 	umount(MNT['proc'])

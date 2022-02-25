@@ -12,13 +12,15 @@ def PYTHONPATH_ADD_REQUIRED_FOLDERS():
 	if PARDIR not in PYPATHS:
 		PYPATHS = '{}:{}'.format(PARDIR, ':'.join(PYPATHS))
 		os.environ['PYTHONPATH']	= PYPATHS
+
 def procedure_user():
 	import reroot
 	reroot.main.env_store()
-	reroot.main.super_su(helper='pkexec') 	if os.geteuid() != 0	else print(f'running as  UID: {os.geteuid()} ({os.environ.get("USER")}) [OK]')
-
+	reroot.main.super_su(helper='pkexec')
+	
 def procedure_root():
 	import main
+	print(f'running as  UID: {os.geteuid()} ({os.environ.get("USER")}) [OK]')
 	main.env_load()
 	main.cli_ctl()
 
