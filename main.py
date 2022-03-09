@@ -51,7 +51,7 @@ def stop(MNT):
 	return 0
 
 def home():
-	return f'{"/".join(os.path.realpath(__file__).split("/")[0:-1])}/'
+	return os.path.split(os.path.realpath(__file__))[0]
 
 def testenv(**k):
 	n=k['n'];h=k['h'];m=k['m']
@@ -59,9 +59,18 @@ def testenv(**k):
 	[print(f'{n}:\033[31m {v} : FAIL!\033[0m') for v in m  if not os.environ.get(v)]
 
 def super_su(**k):
-	print(f'GOT UID: {os.geteuid()}({os.environ.get("USER")}) NEED UID: 0 (root)!')
-	args = [f'sudo env PYTHONPATH="{os.environ.get("PYTHONPATH")}" ', sys.executable] + sys.argv # + [os.environ]
-	os.execvpe('sudo', args, os.environ)
+	helper=k.get('su')
+	python,script=sys.executable,sys.argv
+	PYPATHORG=os.environ.get('PYTHONPATH')
+	PYPATHPYX=os.path.dirname(os.path.dirname(python))
+	PYPATHSCR=os.path.dirname(script[0])
+	PYPATHPKG=os.path.dirname(os.path.dirname(script[0]))
+	PYTHONPATH='{}:{}:{}:{}'.format(PYPATHORG,PYPATHPYX,PYPATHSCR,PYPATHPKG)
+	os.environ['PYTHONPATH']=PYTHONPATH
+	env=os.environ
+	args = [helper, python] + script # + [os.environ]
+	os.execvpe(helper, args, os.environ)
+
 
 def env_load():
 	with open('/tmp/REROOT_USER.env','rb') as f :

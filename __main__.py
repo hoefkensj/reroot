@@ -1,22 +1,19 @@
 #!/usr/bin/env python
 import os
+import sys
+
 def PYTHONPATH_ADD_REQUIRED_FOLDERS():
-	import os
-	import os.path as P
-	PYPATHS=os.environ['PYTHONPATH'].split(':') if os.environ.get('PYTHONPATH') else []
-	PKGDIR=P.dirname(__file__)
-	PARDIR=P.dirname(PKGDIR)
-	if PKGDIR not in PYPATHS:
-		PYPATHS = '{}:{}'.format(PKGDIR, ':'.join(PYPATHS))
-		os.environ['PYTHONPATH']	= PYPATHS
-	if PARDIR not in PYPATHS:
-		PYPATHS = '{}:{}'.format(PARDIR, ':'.join(PYPATHS))
-		os.environ['PYTHONPATH']	= PYPATHS
+	python,script=sys.executable,sys.argv
+	PYPATHORG=os.environ.get('PYTHONPATH')
+	PYPATHPYX=os.path.dirname(os.path.dirname(python))
+	PYPATHPKG=os.path.dirname(os.path.dirname(script[0]))
+	PYTHONPATH='{}:{}:{}'.format(PYPATHORG,PYPATHPYX,PYPATHPKG)
+	os.environ['PYTHONPATH']	= PYTHONPATH
 
 def procedure_user():
 	import reroot
 	reroot.main.env_store()
-	reroot.main.super_su(helper='pkexec')
+	reroot.main.super_su(su='pkexec')
 	
 def procedure_root():
 	import main
@@ -24,7 +21,11 @@ def procedure_root():
 	main.env_load()
 	main.cli_ctl()
 
-if os.geteuid() == 0:	procedure_root()
-else: procedure_user()
+def run():
+	PYTHONPATH_ADD_REQUIRED_FOLDERS()
+	procedure_root() if os.geteuid() == 0 else procedure_user()
+run()
+
+#
 
 
